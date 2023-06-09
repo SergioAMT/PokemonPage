@@ -18,7 +18,9 @@ const reducer = (state, action) => {
             return{...state, loading: true };
 
         case GET_ALL_POKEMON:
-            return{...state, allPokemon: action.payload, loading: false }
+            return{...state, 
+                allPokemon: action.payload, 
+                loading: false }
     }
     return state
 }
@@ -49,13 +51,12 @@ export const GlobalProvider = ({ children }) => {
         const allpokemonData = [];
 
         for(const pokemon of data.results){
-            console.log(pokemon)
             const pokemonRes = await fetch(pokemon.url);
             const pokemonData = await pokemonRes.json();
             allpokemonData.push(pokemonData)
         }
 
-        setallPokemonData(allPokemonData)
+        setallPokemonData(allpokemonData)
     };
 
     useEffect(() => {
@@ -64,7 +65,8 @@ export const GlobalProvider = ({ children }) => {
     
     return(
         <GlobalContext.Provider value={{
-            ...state
+            ...state,
+            allPokemonData,
         }}>
             {children}
         </GlobalContext.Provider>
