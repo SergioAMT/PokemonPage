@@ -47,7 +47,7 @@ export default function Pokemon() {
         <div className={styles.PokemonBg} style={{
             background: !loading && randomColor,
         }}>
-            {pokemonItem && (
+            {!loading ? pokemonItem && (
                 <>
                     <div className={styles.PokemonImage}>
                         <img
@@ -63,16 +63,46 @@ export default function Pokemon() {
                                 <h5>Name:</h5>
                                 <p>{pokemonItem?.name},</p>
                             </div>
+
                             <div className={styles.PokemonInfoItem}>
                                 <h5>Type:</h5>
                                     {pokemonItem?.types?.map((type) => {
                                         return <p key={type.type.name}>{type.type.name},</p> 
                                     })}
                             </div>
+
+                            <div className={styles.PokemonInfoItem}>
+                                <h5>Height:</h5>
+                                <p>{pokemonItem?.height} m</p>
+                            </div>
+
+                            <div className={styles.PokemonInfoItem}>
+                                <h5>Abilities:</h5>
+                                    {pokemonItem?.abilities?.map((ability) => {
+                                        return <p key={ability.ability.name}>{ability.ability.name},</p> 
+                                    })}
+                            </div>
+
+                            <div className={styles.PokemonInfoItem}>
+                                <h5>Stats:</h5>
+                                    {pokemonItem?.stats?.map((stat) => {
+                                        return <p key={stat.stat.name}>{stat.stat.name},</p> 
+                                    })}
+                            </div>
+
+                            <div className={styles.PokemonInfoItem}>
+                                <h5>A few moves:</h5>
+                                {pokemonItem?.moves?.slice(0, 3).map((move) => {
+                                    return <p key={move.move.name}>{move.move.name},</p>
+                                })}
+                            </div>
                         </div>
                     </div>
                 </>
-            )}
+            ) 
+            :(
+                <h1>loading...</h1>
+            ) }
         </div>
 
     )
