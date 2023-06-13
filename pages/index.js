@@ -9,10 +9,27 @@ export default function Home() {
 
   const handleChange = (e) => {
     setsearch(e.target.value);
+    realTimeSearch(search)
   }
 
+  const handleSearch = (e) => {
+    e.preventDefault();
+    realTimeSearch(search);
+    console.log(search)
+  }
+
+  const displaySearchResults = () => {
+    return searchResults.map((pokemon) => {
+      return (
+        <div
+          key={pokemon.id}>
+          {pokemon.name}
+        </div>)
+    });
+  };
+
   return <main>
-    <form action="" className='search-form'>
+    <form action="" className='search-form' onSubmit={handleSearch}>
       <div className='input-control'>
         <input
           type='text'
@@ -25,9 +42,9 @@ export default function Home() {
       </div>
     </form>
 
-    {search && <div className='search-results'>
-
-    </div>}
+    {search && (<div className='search-results'>
+      {displaySearchResults()}
+    </div>)}
 
     <div className='all-pokemon'>
       {allPokemonData ? allPokemonData.map((pokemon) => {

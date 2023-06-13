@@ -1,3 +1,4 @@
+import { Search } from "@mui/icons-material";
 import { debounce } from "lodash";
 import React, { useContext, useEffect, useReducer } from "react"
 import { useState } from "react";
@@ -8,7 +9,6 @@ const GlobalContext = React.createContext({});
 const LOADING = "LOADING";
 const GET_POKEMON = "GET_POKEMON";
 const GET_ALL_POKEMON = "GET_ALL_POKEMON";
-const GET_ALL_POKEMON_DATA = "GET_ALL_POKEMON_DATA";
 const GET_SEARCH = "GET_SEARCH";
 const GET_POKEMON_DATABASE = "GET_POKEMON_DATABASE";
 const NEXT = "NEXT"
@@ -35,14 +35,14 @@ const reducer = (state, action) => {
         case GET_POKEMON_DATABASE:
             return {
                 ...state,
-                searchResults: action.payload,
+                pokemonDataBase: action.payload,
                 loading: false
             }
 
         case GET_SEARCH:
-            return{
+            return {
                 ...state,
-
+                searchResults: action.payload,
                 loading: false
             }
 
@@ -104,17 +104,16 @@ export const GlobalProvider = ({ children }) => {
         dispacth({ type: 'GET_POKEMON_DATABASE', payload: data.results });
     }
 
-    // real time search
+    //real time search
     const realTimeSearch = debounce(async (search) => {
-        dispacth({ type: 'LOADING' });
-        // search pokemon database
+        dispacth({ type: "LOADING" });
+        //search pokemon database
         const res = state.pokemonDataBase.filter((pokemon) => {
-            return pokemon.name.includes(search)
-        })
+            return pokemon.name.includes(search.toLowerCase());
+        });
 
-        dispacth({ type: 'GET_SEARCH', payload: res })
-
-    }, 500)
+        dispacth({ type: "GET_SEARCH", payload: res });
+    }, 500);
 
     useEffect(() => {
         getPokemoDatabase();
