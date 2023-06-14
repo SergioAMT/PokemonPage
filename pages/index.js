@@ -4,7 +4,7 @@ import Image from 'next/image';
 import Router from 'next/router';
 
 export default function Home() {
-  const { allPokemonData, searchResults, getPokemon, loading, realTimeSearch } = useGlobalContext();
+  const { allPokemonData, searchResults, next, getPokemon, loading, realTimeSearch } = useGlobalContext();
   const [search, setsearch] = useState("");
 
   const handleChange = (e) => {
@@ -22,7 +22,11 @@ export default function Home() {
     return searchResults.map((pokemon) => {
       return (
         <div
-          key={pokemon.id}>
+          key={pokemon.id}
+          onClick={() => {
+            Router.push(`/pokemon/${pokemon.name}`)
+          }}
+          className='pokemon-name'>
           {pokemon.name}
         </div>)
     });
@@ -42,7 +46,7 @@ export default function Home() {
       </div>
     </form>
 
-    {search && (<div className='search-results'>
+    {search && searchResults.length > 0 && (<div className='search-results'>
       {displaySearchResults()}
     </div>)}
 
@@ -60,6 +64,14 @@ export default function Home() {
           </div>
         </div>
       }) : <h1>loading...</h1>}
+    </div>
+
+    <div className='next'>
+      {allPokemonData.length > 0 && (<div>
+        <button className='next-btn' onClick={next}>
+          Load More &darr;
+        </button>
+      </div>)}
     </div>
   </main>
 

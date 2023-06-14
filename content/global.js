@@ -1,4 +1,3 @@
-import { Search } from "@mui/icons-material";
 import { debounce } from "lodash";
 import React, { useContext, useEffect, useReducer } from "react"
 import { useState } from "react";
@@ -21,7 +20,8 @@ const reducer = (state, action) => {
         case GET_ALL_POKEMON:
             return {
                 ...state,
-                allPokemon: action.payload,
+                allPokemon: action.payload.results,
+                next: action.payload.next,
                 loading: false
             };
 
@@ -43,6 +43,14 @@ const reducer = (state, action) => {
             return {
                 ...state,
                 searchResults: action.payload,
+                loading: false
+            }
+        
+        case NEXT:
+            return{
+                ...state,
+                allPokemon:  [...state.allPokemon, ...action.payload.results],
+                next: action.payload.next,
                 loading: false
             }
 
@@ -70,7 +78,7 @@ export const GlobalProvider = ({ children }) => {
         dispacth({ type: "LOADING" });
         const res = await fetch(`${baseUrl}pokemon?limit=20`);
         const data = await res.json();
-        dispacth({ type: "GET_ALL_POKEMON", payload: data.results });
+        dispacth({ type: "GET_ALL_POKEMON", payload: data });
 
         //fetch character data
         const allpokemonData = [];
@@ -104,6 +112,23 @@ export const GlobalProvider = ({ children }) => {
         dispacth({ type: 'GET_POKEMON_DATABASE', payload: data.results });
     }
 
+    //next page
+    const next = async () => {
+        dispacth({ type: 'LOADING'})
+        const res = await fetch(state.next);
+        const data = await res.json();
+        dispacth ({type: 'NEXT', payload: data}); 
+
+        const newPokemonData = [];
+        for (const pokemon of data.results){
+            const pokemonRes = await fetch(pokemon.url);
+            const pokemonData = await pokemonRes.json()
+            newPokemonData.push(pokemonData);
+        }
+
+        setallPokemonData([...allPokemonData, ...newPokemonData])
+    }
+
     //real time search
     const realTimeSearch = debounce(async (search) => {
         dispacth({ type: "LOADING" });
@@ -113,7 +138,7 @@ export const GlobalProvider = ({ children }) => {
         });
 
         dispacth({ type: "GET_SEARCH", payload: res });
-    }, 500);
+    }, 2000);
 
     useEffect(() => {
         getPokemoDatabase();
@@ -126,6 +151,7 @@ export const GlobalProvider = ({ children }) => {
             allPokemonData,
             getPokemon,
             realTimeSearch,
+            next
         }}>
             {children}
         </GlobalContext.Provider>

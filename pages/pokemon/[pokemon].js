@@ -1,7 +1,8 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useGlobalContext } from '../../content/global'
 import { useRouter } from 'next/router';
 import styles from '@/styles/pokemon.module.css'
+import Loading from '@/components/Loading';
 
 export default function Pokemon() {
 
@@ -10,11 +11,14 @@ export default function Pokemon() {
     const { pokemon } = router.query;
     const { getPokemon, loading, pokemon: pokemonItem } = useGlobalContext();
 
+
+    // const [loading, setloading] = useState(true);
+
     useEffect(() => {
         if (pokemon) {
             getPokemon(pokemon);
         }
-    }, []);
+    }, [pokemon]);
 
     let myLink = '';
     if (pokemonItem?.sprites?.other) {
@@ -24,24 +28,24 @@ export default function Pokemon() {
 
     //pokemon bg colors
     const pkColors = [
-    "#f8d5a3",
-    "#f5b7b1",
-    "#c39bd3",
-    "#aed6f1",
-    "#a3e4d7",
-    "#f9e79f",
-    "#fadbd8",
-    "#d2b4de",
-    "#a9cce3",
-    "#a2d9ce",
-    "#f7dc6f",
-    "#f5cba7",
-    "#bb8fce",
-    "#85c1e9",
-    "#76d7c4",
+        "#f8d5a3",
+        "#f5b7b1",
+        "#c39bd3",
+        "#aed6f1",
+        "#a3e4d7",
+        "#f9e79f",
+        "#fadbd8",
+        "#d2b4de",
+        "#a9cce3",
+        "#a2d9ce",
+        "#f7dc6f",
+        "#f5cba7",
+        "#bb8fce",
+        "#85c1e9",
+        "#76d7c4",
     ]
-    
-     const randomColor = pkColors[Math.floor(Math.random() * pkColors.length)]
+
+    const randomColor = pkColors[Math.floor(Math.random() * pkColors.length)]
 
     return (
         <div className={styles.PokemonBg} style={{
@@ -66,28 +70,28 @@ export default function Pokemon() {
 
                             <div className={styles.PokemonInfoItem}>
                                 <h5>Type:</h5>
-                                    {pokemonItem?.types?.map((type) => {
-                                        return <p key={type.type.name}>{type.type.name},</p> 
-                                    })}
+                                {pokemonItem?.types?.map((type) => {
+                                    return <p key={type.type.name}>{type.type.name},</p>
+                                })}
                             </div>
 
                             <div className={styles.PokemonInfoItem}>
                                 <h5>Height:</h5>
-                                <p>{pokemonItem?.height} m</p>
+                                <p>{pokemonItem?.height} in</p>
                             </div>
 
                             <div className={styles.PokemonInfoItem}>
                                 <h5>Abilities:</h5>
-                                    {pokemonItem?.abilities?.map((ability) => {
-                                        return <p key={ability.ability.name}>{ability.ability.name},</p> 
-                                    })}
+                                {pokemonItem?.abilities?.map((ability) => {
+                                    return <p key={ability.ability.name}>{ability.ability.name},</p>
+                                })}
                             </div>
 
                             <div className={styles.PokemonInfoItem}>
                                 <h5>Stats:</h5>
-                                    {pokemonItem?.stats?.map((stat) => {
-                                        return <p key={stat.stat.name}>{stat.stat.name},</p> 
-                                    })}
+                                {pokemonItem?.stats?.map((stat) => {
+                                    return <p key={stat.stat.name}>{stat.stat.name},</p>
+                                })}
                             </div>
 
                             <div className={styles.PokemonInfoItem}>
@@ -99,10 +103,12 @@ export default function Pokemon() {
                         </div>
                     </div>
                 </>
-            ) 
-            :(
-                <h1>loading...</h1>
-            ) }
+            )
+                : (
+                    <div className='loader'>
+                        <Loading />
+                    </div>
+                )}
         </div>
 
     )
